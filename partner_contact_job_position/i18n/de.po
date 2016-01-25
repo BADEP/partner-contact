@@ -3,13 +3,13 @@
 # * partner_contact_job_position
 # 
 # Translators:
-# Rudolf Schnapka <rs@techno-flex.de>, 2016
+# Rudolf Schnapka <rs@techno-flex.de>, 2016-2017
 msgid ""
 msgstr ""
 "Project-Id-Version: partner-contact (8.0)\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-01-19 01:46+0000\n"
-"PO-Revision-Date: 2016-01-18 16:40+0000\n"
+"POT-Creation-Date: 2017-02-21 16:57+0000\n"
+"PO-Revision-Date: 2017-02-24 22:29+0000\n"
 "Last-Translator: Rudolf Schnapka <rs@techno-flex.de>\n"
 "Language-Team: German (http://www.transifex.com/oca/OCA-partner-contact-8-0/language/de/)\n"
 "MIME-Version: 1.0\n"
@@ -39,6 +39,11 @@ msgid "Created on"
 msgstr "Angelegt am"
 
 #. module: partner_contact_job_position
+#: field:res.partner.job_position,display_name:0
+msgid "Display Name"
+msgstr "Anzeigename"
+
+#. module: partner_contact_job_position
 #: field:res.partner.job_position,id:0
 msgid "ID"
 msgstr "ID"
@@ -60,6 +65,11 @@ msgstr "Position"
 #: view:res.partner.job_position:partner_contact_job_position.res_partner_job_position_tree_view
 msgid "Job positions"
 msgstr "Positionen"
+
+#. module: partner_contact_job_position
+#: field:res.partner.job_position,__last_update:0
+msgid "Last Modified on"
+msgstr "Zuletzt verändert am"
 
 #. module: partner_contact_job_position
 #: field:res.partner.job_position,write_uid:0
