@@ -31,5 +31,5 @@ class ResPartner(models.Model):
             name = partner.name
             if not partner.is_company and partner.title_id:
                 title = partner.title_id.shortcut or partner.title_id.name
-                name = " ".join([title, name])
+                name = f"{title} {name}"
             partner.name_with_title = name
