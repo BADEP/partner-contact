@@ -116,7 +116,7 @@ class TestBaseLocationNuts(TransactionCase):
             self.nut_wizard.import_update_partner_nuts()
 
     def create_new_parent(self, orig_parent):
-        new_parent = self.nuts_model.create(
+        return self.nuts_model.create(
             {
                 "level": orig_parent.level,
                 "code": "NEW" + orig_parent.code,
@@ -125,7 +125,6 @@ class TestBaseLocationNuts(TransactionCase):
                 "not_updatable": False,
             }
         )
-        return new_parent
 
     @patch(MOCK_PATH, return_value=create_response_ok())
     def test_no_update(self, mock_response):

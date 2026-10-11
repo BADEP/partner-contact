@@ -5,6 +5,7 @@
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl.html).
 
 import logging
+import typing
 
 import requests
 
@@ -34,7 +35,7 @@ class NutsImport(models.TransientModel):
 
     _name = "nuts.import"
     _description = "Import NUTS items from European ShowVoc service"
-    _countries = {
+    _countries: typing.ClassVar[dict] = {
         "BE": False,
         "BG": False,
         "CZ": False,
@@ -74,7 +75,7 @@ class NutsImport(models.TransientModel):
 
     # flake8: noqa: B950
     def _get_query(self):
-        query = """
+        return """
             PREFIX : <http://data.europa.eu/nuts/>
             PREFIX adms: <http://www.w3.org/ns/adms#>
             PREFIX corrStatus: <http://publications.europa.eu/resource/authority/correction-status/>
@@ -146,7 +147,6 @@ class NutsImport(models.TransientModel):
             }
             ORDER BY ?s
         """
-        return query
 
     def _delete_obsolete_nuts(self, new_nuts_ids):
         """Deletes the NUTS entries that are not updatable."""
@@ -219,9 +219,8 @@ class NutsImport(models.TransientModel):
                 error.response.status_code,
                 error.response.text,
             )
-            raise error
-        nuts_ids = self._create_partner_nuts(response)
-        return nuts_ids
+            raise
+        return self._create_partner_nuts(response)
 
     def action_partner_nuts(self):
         nuts_ids = self.import_update_partner_nuts()
