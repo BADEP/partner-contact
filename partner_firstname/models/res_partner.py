@@ -4,6 +4,7 @@
 # Copyright 2024 Simone Rubino - Aion Tech
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 import logging
+import typing
 
 from odoo import api, fields, models
 
@@ -14,7 +15,7 @@ class ResPartner(models.Model):
     """Adds last name and first name; name becomes a stored function field."""
 
     _name = "res.partner"
-    _inherit = ["res.partner", "firstname.mixin"]
+    _inherit: typing.ClassVar[list[str]] = ["res.partner", "firstname.mixin"]
 
     firstname = fields.Char("First name", index=True)
 
@@ -30,7 +31,7 @@ class ResPartner(models.Model):
 
     # @api.depends(lambda self: self._get_fields_depend_firstname_lastname_required())
     def _compute_firstname_lastname_required(self):
-        for partner in self.filtered(lambda x: x.is_company or not x.type == "contact"):
+        for partner in self.filtered(lambda x: x.is_company or x.type != "contact"):
             partner.firstname_required = False
             partner.lastname_required = False
 
@@ -59,7 +60,7 @@ class ResPartner(models.Model):
         created_partners = self.browse()
         for vals in vals_list:
             partner_context = dict(self.env.context)
-            is_company = vals.get("company_type") == "company"
+            is_company = self._is_company_from_vals(vals, partner_context)
             if not is_company and self.name_fields_in_vals(vals) and "name" in vals:
                 del vals["name"]
                 partner_context.pop("default_name", None)
@@ -86,6 +87,22 @@ class ResPartner(models.Model):
                 ResPartner, self.with_context(partner_context)
             ).create([vals])
         return created_partners
+
+    @api.model
+    def _is_company_from_vals(self, vals, context):
+        """Guess whether the partner being created is a company.
+
+        Since Odoo 20.0, ``company_type`` no longer exists and ``is_company``
+        is computed: a partner is a company when it is its own commercial
+        entity and has a Tax ID (see ``res.partner._compute_is_company``).
+        """
+        if "is_company" in vals:
+            return bool(vals["is_company"])
+        if "default_is_company" in context:
+            return bool(context["default_is_company"])
+        vat = vals.get("vat")
+        parent_id = vals.get("parent_id", context.get("default_parent_id"))
+        return bool(vat and vat not in ("/", "na", "NA") and not parent_id)
 
     def get_extra_default_copy_values(self):
         """Method to add '(copy)' suffix to lastname or firstname, depending on name

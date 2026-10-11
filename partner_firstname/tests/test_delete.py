@@ -1,6 +1,8 @@
 # Copyright 2015 Grupo ESOC
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
+import typing
+
 from odoo.tests import TransactionCase
 
 from .base import MailInstalled
@@ -8,7 +10,7 @@ from .base import MailInstalled
 
 class CompanyCase(TransactionCase):
     model = "res.partner"
-    context = {"default_is_company": True}
+    context: typing.ClassVar[dict] = {"default_is_company": True}
 
     def test_computing_after_unlink(self):
         """Test what happens if recomputed after unlinking.
@@ -25,14 +27,15 @@ class CompanyCase(TransactionCase):
 
 
 class PersonCase(CompanyCase):
-    context = {"default_is_company": False}
+    context: typing.ClassVar[dict] = {"default_is_company": False}
 
 
 class UserCase(CompanyCase, MailInstalled):
     model = "res.users"
-    context = {"default_login": "user@example.com"}
+    context: typing.ClassVar[dict] = {"default_login": "user@example.com"}
 
     def test_computing_after_unlink(self):
         # Cannot create users if ``mail`` is installed
         if not self.mail_installed():
             return super().test_computing_after_unlink()  # pragma: no cover
+        return None

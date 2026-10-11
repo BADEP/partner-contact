@@ -3,13 +3,15 @@
 
 """Test default values for models."""
 
+import typing
+
 from odoo.tests import TransactionCase
 
 
 class PersonCase(TransactionCase):
     """Test ``res.partner`` when it is a person."""
 
-    context = {"default_is_company": False}
+    context: typing.ClassVar[dict] = {"default_is_company": False}
     model = "res.partner"
 
     def setUp(self):
