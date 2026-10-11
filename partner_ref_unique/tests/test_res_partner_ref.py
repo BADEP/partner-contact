@@ -80,13 +80,14 @@ class TestResPartnerRefUnique(common.TransactionCase):
         self.company.partner_ref_unique = (
             "none"  # Ensure no constraint is applied at beginning
         )
-        self.partner1.is_company = True
-        self.partner2.is_company = True
+        # In 20.0 is_company is computed (own commercial entity with a Tax ID)
+        self.partner1.vat = "PARTNER1"
+        self.partner2.vat = "PARTNER2"
         # Test that we can create/modify company partners
         # with same ref in current situation
         self.partner1.ref = "same_ref"
         partner3 = self.partner_obj.create(
-            {"name": "Company3", "ref": "same_ref", "is_company": True}
+            {"name": "Company3", "ref": "same_ref", "vat": "COMPANY3"}
         )
         # Try to activate restriction
         with self.assertRaisesRegex(
@@ -104,7 +105,7 @@ class TestResPartnerRefUnique(common.TransactionCase):
             ValidationError, "This reference is equal to partner"
         ):
             self.partner_obj.create(
-                {"is_company": True, "name": "other", "ref": "same_ref"}
+                {"vat": "OTHER", "name": "other", "ref": "same_ref"}
             )
         # Here there shouldn't be any problem
         self.partner_obj.create(
