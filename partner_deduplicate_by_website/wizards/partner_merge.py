@@ -3,6 +3,7 @@
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl.html).
 
 from odoo import fields, models
+from odoo.tools import SQL
 
 
 class BasePartnerMergeAutomaticWizard(models.TransientModel):
@@ -17,12 +18,15 @@ class BasePartnerMergeAutomaticWizard(models.TransientModel):
         """
         query = super()._generate_query(fields, maximum_group=maximum_group)
         if "website" in fields:
-            if "WHERE" in query:
-                index = query.find("WHERE")
-                query = (
-                    query[: index + 6] + "website IS NOT NULL AND " + query[index + 6 :]
-                )
-            else:
-                index = query.find(" GROUP BY")
-                query = query[:index] + " WHERE website IS NOT NULL" + query[index:]
+            code, params, to_flush = query._sql_tuple
+            index_where = code.find("WHERE")
+            index_group_by = code.find("GROUP BY")
+            criteria = code[index_where + 5 : index_group_by].strip()
+            criteria = (
+                f"website IS NOT NULL AND {criteria}"
+                if criteria
+                else "website IS NOT NULL"
+            )
+            code = f"{code[: index_where + 5]} {criteria}\n{code[index_group_by:]}"
+            query = SQL(code, *params, to_flush=to_flush)
         return query
