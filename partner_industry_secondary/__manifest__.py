@@ -6,7 +6,7 @@
 {
     "name": "Partner Industry Secondary",
     "summary": "Add secondary partner industries",
-    "version": "19.0.1.0.0",
+    "version": "20.0.1.0.0",
     "category": "Sales",
     "website": "https://github.com/OCA/partner-contact",
     "author": "Tecnativa, Odoo Community Association (OCA)",
@@ -14,10 +14,10 @@
     "installable": True,
     "depends": ["base_setup", "contacts"],
     "data": [
-        "security/ir.model.access.csv",
         "security/partner_industry_security.xml",
         "views/res_partner_industry_view.xml",
         "views/res_partner_view.xml",
         "views/res_config_settings.xml",
+        "security/ir.access.csv",
     ],
 }
