@@ -1,26 +1,32 @@
 # Copyright 2020 Camptocamp SA
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl)
-from datetime import date, datetime
+from datetime import datetime
+from zoneinfo import ZoneInfo
 
-import pytz
+from odoo import fields
 
-UTC_TZ = pytz.timezone("UTC")
+UTC_TZ = ZoneInfo("UTC")
 
 
 def tz_to_tz_naive_datetime(from_tz, to_tz, date_time):
     """
     Convert tz-naive datetime from a specifc tz to a tz-naive datetime of a specific tz
 
-    :param from_tz: pytz.timezone object or tz selection value
-    :param to_tz: pytz.timezone object or tz selection value
+    :param from_tz: tzinfo object (e.g. zoneinfo.ZoneInfo) or tz selection value
+    :param to_tz: tzinfo object (e.g. zoneinfo.ZoneInfo) or tz selection value
     :param date_time: tz-naive datetime.datetime object
     :return: tz-naive datetime.datetime object
     """
     if isinstance(from_tz, str):
-        from_tz = pytz.timezone(from_tz)
+        from_tz = ZoneInfo(from_tz)
     if isinstance(to_tz, str):
-        to_tz = pytz.timezone(to_tz)
-    return from_tz.localize(date_time).astimezone(to_tz).replace(tzinfo=None)
+        to_tz = ZoneInfo(to_tz)
+    if hasattr(from_tz, "localize"):
+        # pytz-style tzinfo objects must be attached with localize()
+        aware_date_time = from_tz.localize(date_time)
+    else:
+        aware_date_time = date_time.replace(tzinfo=from_tz)
+    return aware_date_time.astimezone(to_tz).replace(tzinfo=None)
 
 
 def tz_to_utc_naive_datetime(from_tz, date_time):
@@ -35,8 +41,8 @@ def tz_to_tz_time(from_tz, to_tz, time, base_date=None):
     """
     Convert datetime.time from a specific tz to a datetime.time of a specific tz
 
-    :param from_tz: pytz.timezone object or tz selection value
-    :param to_tz: pytz.timezone object or tz selection value
+    :param from_tz: tzinfo object (e.g. zoneinfo.ZoneInfo) or tz selection value
+    :param to_tz: tzinfo object (e.g. zoneinfo.ZoneInfo) or tz selection value
     :param time: datetime.time object
     :param base_date: OPTIONAL datetime.date or datetime.datetime object to use
            for the conversion
@@ -44,7 +50,7 @@ def tz_to_tz_time(from_tz, to_tz, time, base_date=None):
     """
     # Combine time with a date
     if base_date is None:
-        base_date = date.today()
+        base_date = fields.Date.today()
     date_time = datetime.combine(base_date, time)
     new_date_time = tz_to_tz_naive_datetime(from_tz, to_tz, date_time)
     return new_date_time.time()
