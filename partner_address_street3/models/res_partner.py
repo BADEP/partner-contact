@@ -30,9 +30,9 @@ class ResPartner(models.Model):
                     values[field] = val.id if isinstance(val, models.BaseModel) else val
         return values
 
-    def _display_address(self, without_company=False):
+    def _display_address(self, without_name=False, separator="\n"):
         """Remove empty lines which can happen when street3 field is empty."""
-        res = super()._display_address(without_company=without_company)
+        res = super()._display_address(without_name=without_name, separator=separator)
         while "\n\n" in res:
             res = res.replace("\n\n", "\n")
         return res
