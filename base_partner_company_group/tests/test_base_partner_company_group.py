@@ -5,12 +5,14 @@ from odoo.addons.base.tests.common import BaseCommon
 
 
 class TestBasePartnerCompanyGroup(BaseCommon):
+    _test_user_groups = None
+
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
         cls.partner_model = cls.env["res.partner"]
         cls.company = cls.partner_model.create(
-            {"name": "Test Company", "company_type": "company"}
+            {"name": "Test Company", "is_company": True}
         )
         cls.contact = cls.partner_model.create(
             {"name": "Test Contact", "type": "contact", "parent_id": cls.company.id}
