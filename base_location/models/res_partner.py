@@ -58,6 +58,7 @@ class ResPartner(models.Model):
                 record.city_id = record.zip_id.city_id
             elif not record.country_enforce_cities:
                 record.city_id = False
+        return None
 
     @api.depends("zip_id")
     def _compute_city(self):
@@ -66,6 +67,7 @@ class ResPartner(models.Model):
         for record in self:
             if record.zip_id:
                 record.city = record.zip_id.city_id.name
+        return None
 
     @api.depends("zip_id")
     def _compute_zip(self):
@@ -74,6 +76,7 @@ class ResPartner(models.Model):
         for record in self:
             if record.zip_id:
                 record.zip = record.zip_id.name
+        return None
 
     @api.depends("zip_id", "state_id")
     def _compute_country_id(self):
@@ -84,6 +87,7 @@ class ResPartner(models.Model):
                 record.country_id = record.zip_id.city_id.country_id
             elif record.state_id:
                 record.country_id = record.state_id.country_id
+        return None
 
     @api.depends("zip_id")
     def _compute_state_id(self):
@@ -93,6 +97,7 @@ class ResPartner(models.Model):
             state = record.zip_id.city_id.state_id
             if state and record.state_id != state:
                 record.state_id = record.zip_id.city_id.state_id
+        return None
 
     @api.constrains("zip_id", "country_id", "city_id", "state_id", "zip")
     def _check_zip(self):
