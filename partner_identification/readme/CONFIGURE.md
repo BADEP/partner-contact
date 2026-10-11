@@ -18,8 +18,10 @@ This functionality can be overridden by setting `id_no_validate` to `True`
 in the context, such as:
 
 ``` python
-partner.with_context(id_no_validate=True).write({
-   'name': 'Bad Value',
-   'category_id': self.env.ref('id_category_only_numerics').id,
-})
+partner.with_context(id_no_validate=True).write(
+    {
+        "name": "Bad Value",
+        "category_id": self.env.ref("id_category_only_numerics").id,
+    }
+)
 ```
