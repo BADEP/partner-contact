@@ -16,14 +16,14 @@ class TestPartnerRelationCommon(common.TransactionCase):
             {"name": "Test User 1", "is_company": False, "ref": "PR01"}
         )
         cls.partner_02_company = cls.Partner.create(
-            {"name": "Test Company", "is_company": True, "ref": "PR02"}
+            {"name": "Test Company", "vat": "BE0477472701", "ref": "PR02"}
         )
         # Create partners with specific categories:
         cls.category_01_ngo = cls.PartnerCategory.create({"name": "NGO"})
         cls.partner_03_ngo = cls.Partner.create(
             {
                 "name": "Test NGO",
-                "is_company": True,
+                "vat": "BE0477472701",
                 "ref": "PR03",
                 "category_id": [(4, cls.category_01_ngo.id)],
             }

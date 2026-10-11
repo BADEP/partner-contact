@@ -1,7 +1,7 @@
 # Copyright 2016-2025 Therp BV <https://therp.nl>.
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl.html).
 import logging
-from datetime import date, datetime, timedelta
+from datetime import date, timedelta
 
 from odoo import fields
 from odoo.exceptions import ValidationError
@@ -236,8 +236,8 @@ class TestPartnerRelation(TestPartnerRelationCommon):
         relation = self.company2person_relation
         result = relation._onchange_type_id()
         domain = self._get_domain_from_logged_result(result)
-        self.assertTrue(("is_company", "=", True) in domain["left_partner_id"])
-        self.assertTrue(("is_company", "=", False) in domain["right_partner_id"])
+        self.assertTrue(["is_company", "=", True] in domain["left_partner_id"])
+        self.assertTrue(["is_company", "=", False] in domain["right_partner_id"])
 
     def test_onchange_type_id_needing_categories(self):
         """Test on_change_type_id with relation needing categories."""
@@ -253,10 +253,10 @@ class TestPartnerRelation(TestPartnerRelationCommon):
         result = relation_ngo_volunteer._onchange_type_id()
         domain = self._get_domain_from_logged_result(result)
         self.assertTrue(
-            ("category_id", "=", self.category_01_ngo.id) in domain["left_partner_id"]
+            ["category_id", "=", self.category_01_ngo.id] in domain["left_partner_id"]
         )
         self.assertTrue(
-            ("category_id", "=", self.category_02_volunteer.id)
+            ["category_id", "=", self.category_02_volunteer.id]
             in domain["right_partner_id"]
         )
 
@@ -299,7 +299,7 @@ class TestPartnerRelation(TestPartnerRelationCommon):
         # 2. Test call with company 2 person relation
         relation = self.company2person_relation
         domain = relation._onchange_partner()["domain"]
-        self.assertTrue(("left_partner_type", "=", "c") in domain["type_id"])
+        self.assertTrue(["left_partner_type", "=", "c"] in domain["type_id"])
         # 3. Test with invalid or impossible combinations
         relation_nobody = self._get_empty_relation()
         relation_nobody.left_partner_id = self.partner_02_company
@@ -520,7 +520,7 @@ class TestPartnerRelation(TestPartnerRelationCommon):
                 "type_id": type_allow.id,
                 "left_partner_id": self.partner_01_person.id,
                 "right_partner_id": self.partner_01_person.id,
-                "date_start": datetime.now() + timedelta(1),
+                "date_start": fields.Datetime.now() + timedelta(1),
             }
         )
         type_allow.allow_self = False

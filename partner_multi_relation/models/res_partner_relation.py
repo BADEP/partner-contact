@@ -27,7 +27,7 @@ class ResPartnerRelation(models.Model):
         bypass_search_access=True,
         ondelete="cascade",
     )
-    left_partner_id_domain = fields.Binary(
+    left_partner_id_domain = fields.Json(
         compute="_compute_left_partner_id_domain",
         default=[],
     )
@@ -38,17 +38,16 @@ class ResPartnerRelation(models.Model):
         bypass_search_access=True,
         ondelete="cascade",
     )
-    right_partner_id_domain = fields.Binary(
+    right_partner_id_domain = fields.Json(
         compute="_compute_right_partner_id_domain",
         default=[],
     )
     type_id = fields.Many2one(
         comodel_name="res.partner.relation.type",
-        string="Type",
         required=True,
         bypass_search_access=True,
     )
-    type_id_domain = fields.Binary(
+    type_id_domain = fields.Json(
         compute="_compute_type_id_domain",
         default=[],
     )
@@ -108,8 +107,8 @@ class ResPartnerRelation(models.Model):
         self._compute_right_partner_id_domain()
         result = {
             "domain": {
-                "left_partner_id": self.left_partner_id_domain,
-                "right_partner_id": self.right_partner_id_domain,
+                "left_partner_id": self.left_partner_id_domain or [],
+                "right_partner_id": self.right_partner_id_domain or [],
             }
         }
         # Check wether domain results in no choice or wrong choice of partners:
@@ -131,7 +130,7 @@ class ResPartnerRelation(models.Model):
         """Check wether partner_domain results in empty selection
         for partner, or wrong selection of partner already selected.
         """
-        test_domain = Domain(partner_domain)
+        test_domain = Domain(partner_domain or [])
         if partner:
             test_domain &= Domain("id", "=", partner.id)
         Partner = self.env["res.partner"]
@@ -154,7 +153,7 @@ class ResPartnerRelation(models.Model):
         self._compute_type_id_domain()
         result = {
             "domain": {
-                "type_id": self.type_id_domain,
+                "type_id": self.type_id_domain or [],
             }
         }
         # Check wether domain results in no choice or wrong choice for type_id.
@@ -172,7 +171,9 @@ class ResPartnerRelation(models.Model):
         self.ensure_one()
         if not self.type_id:
             return None
-        test_domain = Domain(self.type_id_domain) & Domain("id", "=", self.type_id.id)
+        test_domain = Domain(self.type_id_domain or []) & Domain(
+            "id", "=", self.type_id.id
+        )
         RelationType = self.env["res.partner.relation.type"]
         if RelationType.search(test_domain, limit=1):
             return None
@@ -191,7 +192,7 @@ class ResPartnerRelation(models.Model):
             if this.type_id:
                 contact_type = this.type_id.left_partner_type
                 if contact_type:
-                    is_company = True if contact_type == "c" else False
+                    is_company = contact_type == "c"
                     domain.append(("is_company", "=", is_company))
                 category_id = this.type_id.left_partner_category_id
                 if category_id:
@@ -206,7 +207,7 @@ class ResPartnerRelation(models.Model):
             if this.type_id:
                 contact_type = this.type_id.right_partner_type
                 if contact_type:
-                    is_company = True if contact_type == "c" else False
+                    is_company = contact_type == "c"
                     domain.append(("is_company", "=", is_company))
                 category_id = this.type_id.right_partner_category_id
                 if category_id:
@@ -441,11 +442,12 @@ class ResPartnerRelation(models.Model):
         :raises ValidationError: When constraint is violated
         """
         for record in self:
-            if record.left_partner_id == record.right_partner_id:
-                if not (record.type_id and record.type_id.allow_self):
-                    raise ValidationError(
-                        self.env._("Partners cannot have a relation with themselves.")
-                    )
+            if record.left_partner_id == record.right_partner_id and not (
+                record.type_id and record.type_id.allow_self
+            ):
+                raise ValidationError(
+                    self.env._("Partners cannot have a relation with themselves.")
+                )
 
     @api.constrains(
         "left_partner_id", "type_id", "right_partner_id", "date_start", "date_end"
