@@ -8,6 +8,8 @@ from odoo.addons.base.tests.common import BaseCommon
 
 
 class TestDeduplicateFilter(BaseCommon):
+    _test_user_groups = None
+
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
@@ -16,6 +18,7 @@ class TestDeduplicateFilter(BaseCommon):
                 "name": "Partner 1",
                 "email": "partner1@example.org",
                 "is_company": True,
+                "vat": "BE0477472701",
                 "parent_id": False,
             }
         )
