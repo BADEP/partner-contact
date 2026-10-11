@@ -9,15 +9,15 @@
 {
     "name": "Partner Identification Numbers",
     "category": "Customer Relationship Management",
-    "version": "19.0.1.2.0",
+    "version": "20.0.1.0.0",
     "license": "AGPL-3",
     "depends": ["contacts"],
     "data": [
-        "security/ir.model.access.csv",
         "views/res_partner_id_category_view.xml",
         "views/res_partner_id_number_view.xml",
         "views/res_partner_id_number_kanban_view.xml",
         "views/res_partner_view.xml",
+        "security/ir.access.csv",
     ],
     "author": "ChriCar Beteiligungs- und Beratungs- GmbH,"
     "Tecnativa,"
