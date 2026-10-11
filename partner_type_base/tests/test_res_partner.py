@@ -7,8 +7,9 @@ class TestResPartner(TransactionCase):
         super().setUpClass()
         cls.ResPartner = cls.env["res.partner"]
 
+        # Odoo 20: is_company is computed (own commercial entity with a VAT)
         cls.Partner_company = cls.ResPartner.create(
-            {"name": "Company Partner", "is_company": True, "type": "contact"}
+            {"name": "Company Partner", "vat": "BE0477472701", "type": "contact"}
         )
         cls.Partner_contact = cls.ResPartner.create(
             {"name": "Individual Partner", "is_company": False, "type": "contact"}

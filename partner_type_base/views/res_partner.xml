@@ -9,9 +9,10 @@
                 <attribute name="domain">[('can_be_parent', '=', True)]</attribute>
             </field>
 
-            <xpath expr="//field[@id='individual']" position="attributes">
-                <attribute name="invisible">is_company</attribute>
-                <attribute name="required">is_individual</attribute>
+            <xpath expr="//field[@id='contact']" position="attributes">
+                <attribute
+                    name="required"
+                >is_individual or (is_company and type == 'contact')</attribute>
             </xpath>
             <xpath expr="//field[@name='function']" position="attributes">
                 <attribute name="invisible">not is_individual</attribute>
@@ -26,8 +27,10 @@
                 <attribute name="invisible">not can_be_child</attribute>
                 <attribute name="domain">[('can_be_parent', '=', True)]</attribute>
             </field>
-            <xpath expr="//field[@invisible='is_company']" position="attributes">
-                <attribute name="required">is_individual</attribute>
+            <xpath expr="//h1/field[@name='name']" position="attributes">
+                <attribute
+                    name="required"
+                >is_individual or (is_company and type == 'contact')</attribute>
             </xpath>
             <!-- Modify inner contact form of child_ids -->
             <xpath
