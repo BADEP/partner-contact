@@ -6,15 +6,13 @@
 #        Antonio Espinosa <antonioea@antiun.com>
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-import typing
-
 from odoo import api, fields, models
 
 
 class ResPartnerIdNumber(models.Model):
     _name = "res.partner.id_number"
     _description = "Partner ID Number"
-    _inherit: typing.ClassVar[list[str]] = ["mail.thread", "mail.activity.mixin"]
+    _inherit = ["mail.thread", "mail.activity.mixin"]  # noqa: RUF012
     _order = "name"
 
     @api.constrains("name", "category_id")
