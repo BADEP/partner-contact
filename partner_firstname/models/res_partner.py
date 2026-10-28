@@ -4,7 +4,6 @@
 # Copyright 2024 Simone Rubino - Aion Tech
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 import logging
-import typing
 
 from odoo import api, fields, models
 
@@ -15,7 +14,7 @@ class ResPartner(models.Model):
     """Adds last name and first name; name becomes a stored function field."""
 
     _name = "res.partner"
-    _inherit: typing.ClassVar[list[str]] = ["res.partner", "firstname.mixin"]
+    _inherit = ["res.partner", "firstname.mixin"]  # noqa: RUF012
 
     firstname = fields.Char("First name", index=True)
 

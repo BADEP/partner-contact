@@ -6,8 +6,6 @@
 To have more accurate results, remove the ``mail`` module before testing.
 """
 
-import typing
-
 from odoo.tests import TransactionCase
 
 from .. import exceptions as ex
@@ -17,7 +15,7 @@ class CompanyCase(TransactionCase):
     """Test ``res.partner`` when it is a company."""
 
     model = "res.partner"
-    context: typing.ClassVar[dict] = {"default_is_company": True}
+    context = {"default_is_company": True}  # noqa: RUF012
 
     def tearDown(self):
         try:
@@ -40,7 +38,7 @@ class CompanyCase(TransactionCase):
 class PersonCase(CompanyCase):
     """Test ``res.partner`` when it is a person."""
 
-    context: typing.ClassVar[dict] = {
+    context = {  # noqa: RUF012
         "default_is_company": False,
         "default_type": "contact",
     }
