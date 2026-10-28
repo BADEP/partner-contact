@@ -5,7 +5,6 @@
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl.html).
 
 import logging
-import typing
 
 import requests
 
@@ -35,7 +34,7 @@ class NutsImport(models.TransientModel):
 
     _name = "nuts.import"
     _description = "Import NUTS items from European ShowVoc service"
-    _countries: typing.ClassVar[dict] = {
+    _countries = {  # noqa: RUF012
         "BE": False,
         "BG": False,
         "CZ": False,
