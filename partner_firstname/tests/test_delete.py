@@ -8,7 +8,7 @@ from .base import MailInstalled
 
 class CompanyCase(TransactionCase):
     model = "res.partner"
-    context = {"default_is_company": True}
+    context = {"default_is_company": True}  # noqa: RUF012
 
     def test_computing_after_unlink(self):
         """Test what happens if recomputed after unlinking.
@@ -25,14 +25,15 @@ class CompanyCase(TransactionCase):
 
 
 class PersonCase(CompanyCase):
-    context = {"default_is_company": False}
+    context = {"default_is_company": False}  # noqa: RUF012
 
 
 class UserCase(CompanyCase, MailInstalled):
     model = "res.users"
-    context = {"default_login": "user@example.com"}
+    context = {"default_login": "user@example.com"}  # noqa: RUF012
 
     def test_computing_after_unlink(self):
         # Cannot create users if ``mail`` is installed
         if not self.mail_installed():
             return super().test_computing_after_unlink()  # pragma: no cover
+        return None

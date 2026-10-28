@@ -22,7 +22,7 @@ class FirstNameMixin(models.AbstractModel):
         required_fields = (
             self.env["ir.config_parameter"]
             .sudo()
-            .get_param("partner_firstname.required_fields")
+            .get_str("partner_firstname.required_fields")
         )
         for item in self:
             item.firstname_required = not item.lastname or required_fields in [
@@ -73,7 +73,7 @@ class FirstNameMixin(models.AbstractModel):
         return (
             self.env["ir.config_parameter"]
             .sudo()
-            .get_param("partner_names_order", default_order)
+            .get_str("partner_names_order", default_order)
         )
 
     @api.model
@@ -111,10 +111,9 @@ class FirstNameMixin(models.AbstractModel):
         order = self._get_names_order()
         if order == "last_first_comma":
             return ", ".join(p for p in (lastname, firstname) if p)
-        elif order == "first_last":
+        if order == "first_last":
             return " ".join(p for p in (firstname, lastname) if p)
-        else:
-            return " ".join(p for p in (lastname, firstname) if p)
+        return " ".join(p for p in (lastname, firstname) if p)
 
     @api.model
     def _get_inverse_name(self, name, is_company=False):

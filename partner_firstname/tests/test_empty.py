@@ -15,7 +15,7 @@ class CompanyCase(TransactionCase):
     """Test ``res.partner`` when it is a company."""
 
     model = "res.partner"
-    context = {"default_is_company": True}
+    context = {"default_is_company": True}  # noqa: RUF012
 
     def tearDown(self):
         try:
@@ -38,7 +38,10 @@ class CompanyCase(TransactionCase):
 class PersonCase(CompanyCase):
     """Test ``res.partner`` when it is a person."""
 
-    context = {"default_is_company": False, "default_type": "contact"}
+    context = {  # noqa: RUF012
+        "default_is_company": False,
+        "default_type": "contact",
+    }
 
 
 class AddressCase(TransactionCase):
