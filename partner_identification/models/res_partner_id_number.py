@@ -6,14 +6,13 @@
 #        Antonio Espinosa <antonioea@antiun.com>
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-
 from odoo import api, fields, models
 
 
 class ResPartnerIdNumber(models.Model):
     _name = "res.partner.id_number"
     _description = "Partner ID Number"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _inherit = ["mail.thread", "mail.activity.mixin"]  # noqa: RUF012
     _order = "name"
 
     @api.constrains("name", "category_id")
@@ -27,13 +26,12 @@ class ResPartnerIdNumber(models.Model):
         help="The ID itself. For example, Driver License number of this person",
     )
     category_id = fields.Many2one(
-        string="Category",
         required=True,
         comodel_name="res.partner.id_category",
         help="ID type defined in configuration. For example, Driver License",
     )
     partner_id = fields.Many2one(
-        string="Partner", required=True, comodel_name="res.partner", ondelete="cascade"
+        required=True, comodel_name="res.partner", ondelete="cascade"
     )
     partner_issued_id = fields.Many2one(
         string="Issued by",
@@ -71,14 +69,11 @@ class ResPartnerIdNumber(models.Model):
         tracking=True,
         default="draft",
     )
-    valid_until = fields.Date(tracking=True)
-    valid_from = fields.Date(tracking=True)
-    date_issued = fields.Date(tracking=True)
     active = fields.Boolean(default=True)
 
     @api.model
     def default_get(self, fields_list):
-        res = super().default_get(fields_list if fields_list else [])
+        res = super().default_get(fields_list or [])
         # It seems to be a bug in native odoo that the field partner_id
         # is not in the fields list by default. A workaround is required
         # to force this.
